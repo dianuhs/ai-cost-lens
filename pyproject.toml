@@ -1,0 +1,37 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ai-cost-lens"
+version = "0.1.0"
+description = "FOCUS-style cost analysis CLI for OpenAI, Anthropic, and AWS Bedrock billing exports"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Diana", email = "your.email@example.com" }]
+keywords = ["finops", "ai", "openai", "anthropic", "bedrock", "cost", "focus", "cli"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "click>=8.1.7",
+]
+
+[project.scripts]
+ai-cost-lens = "ai_cost_lens.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/dianuhs/ai-cost-lens"
+Repository = "https://github.com/dianuhs/ai-cost-lens.git"
+"Bug Tracker" = "https://github.com/dianuhs/ai-cost-lens/issues"
+
+[tool.hatch.version]
+path = "ai_cost_lens/__init__.py"

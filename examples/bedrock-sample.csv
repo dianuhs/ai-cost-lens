@@ -1,0 +1,13 @@
+date,model_id,input_tokens,output_tokens,requests,cost_usd
+2026-03-01,amazon.nova-pro-v1:0,180000,54000,360,1.8720
+2026-03-01,anthropic.claude-3-5-sonnet-20241022-v2:0,120000,40000,200,1.4400
+2026-03-01,meta.llama3-70b-instruct-v1:0,300000,90000,400,0.9600
+2026-03-01,amazon.titan-text-express-v1,500000,150000,1000,0.5500
+2026-03-02,amazon.nova-pro-v1:0,165000,49000,330,1.7160
+2026-03-02,anthropic.claude-3-5-sonnet-20241022-v2:0,95000,32000,160,1.1400
+2026-03-02,meta.llama3-70b-instruct-v1:0,280000,84000,370,0.8960
+2026-03-02,amazon.titan-text-express-v1,420000,126000,840,0.4620
+2026-03-03,amazon.nova-pro-v1:0,195000,58000,390,2.0280
+2026-03-03,anthropic.claude-3-5-sonnet-20241022-v2:0,140000,46000,230,1.6800
+2026-03-03,meta.llama3-70b-instruct-v1:0,320000,96000,430,1.0240
+2026-03-03,amazon.titan-text-express-v1,550000,165000,1100,0.6050
