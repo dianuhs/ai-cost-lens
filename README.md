@@ -9,10 +9,12 @@
 | FinOps Lite | Cost visibility — AWS/Azure/GCP spend, FOCUS 1.0 export | [dianuhs/finops-lite](https://github.com/dianuhs/finops-lite) |
 | FinOps Watchdog | Anomaly detection — spend spikes from any cost CSV | [dianuhs/finops-watchdog](https://github.com/dianuhs/finops-watchdog) |
 | Recovery Economics | Resilience modeling — backup/restore cost + scenario compare | [dianuhs/recovery-economics](https://github.com/dianuhs/recovery-economics) |
+| **AI Cost Lens** | AI spend observability — model-level cost across OpenAI, Anthropic, Bedrock | [dianuhs/ai-cost-lens](https://github.com/dianuhs/ai-cost-lens) |
+| SaaS Cost Analyzer | SaaS spend governance — unused licenses, per-seat costs, forecasting | [dianuhs/saas-cost-analyzer](https://github.com/dianuhs/saas-cost-analyzer) |
 | Cloud Cost Guard | Dashboard — spend trends, savings coverage, rightsizing | [dianuhs/cloud-cost-guard](https://github.com/dianuhs/cloud-cost-guard) |
-| **AI Cost Lens** | AI spend observability — model-level cost analysis across OpenAI, Anthropic, Bedrock | [dianuhs/ai-cost-lens](https://github.com/dianuhs/ai-cost-lens) |
+| Tech Spend Command Center | Executive summary — unified Cloud+AI+SaaS report | [dianuhs/tech-spend-command-center](https://github.com/dianuhs/tech-spend-command-center) |
 
-These five tools form one production FinOps pipeline built for finance and engineering teams: pull raw cost data → detect anomalies → model resilience tradeoffs → surface everything in a dashboard → understand AI model spend specifically.
+Six tools. One pipeline. Full Cloud+AI+SaaS coverage for every scope the FinOps Foundation 2026 Framework defines.
 
 ---
 
