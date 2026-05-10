@@ -1,122 +1,108 @@
 # AI Cost Lens
 
-[![CI](https://github.com/dianuhs/ai-cost-lens/actions/workflows/test.yml/badge.svg)](https://github.com/dianuhs/ai-cost-lens/actions/workflows/test.yml)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![AI for FinOps](https://img.shields.io/badge/AI-OpenAI%20%7C%20Anthropic%20%7C%20Bedrock-ff6b35)](https://github.com/cloudandcapital/ai-cost-lens)
+[![FOCUS 2026](https://img.shields.io/badge/FOCUS-2026-brightgreen)](https://focus.finops.org)
 
-**Part of the Visibility → Variance → Tradeoffs pipeline.**
+**AI and LLM spend tracking — model-level cost visibility across OpenAI, Anthropic, and AWS Bedrock.**
 
-| Tool | Role | Repo |
-|------|------|------|
-| FinOps Lite | Cost visibility — AWS/Azure/GCP spend, FOCUS 1.0 export | [dianuhs/finops-lite](https://github.com/dianuhs/finops-lite) |
-| FinOps Watchdog | Anomaly detection — spend spikes from any cost CSV | [dianuhs/finops-watchdog](https://github.com/dianuhs/finops-watchdog) |
-| Recovery Economics | Resilience modeling — backup/restore cost + scenario compare | [dianuhs/recovery-economics](https://github.com/dianuhs/recovery-economics) |
-| **AI Cost Lens** | AI spend observability — model-level cost across OpenAI, Anthropic, Bedrock | [dianuhs/ai-cost-lens](https://github.com/dianuhs/ai-cost-lens) |
-| SaaS Cost Analyzer | SaaS spend governance — unused licenses, per-seat costs, forecasting | [dianuhs/saas-cost-analyzer](https://github.com/dianuhs/saas-cost-analyzer) |
-| Cloud Cost Guard | Dashboard — spend trends, savings coverage, rightsizing | [dianuhs/cloud-cost-guard](https://github.com/dianuhs/cloud-cost-guard) |
-| Tech Spend Command Center | Executive summary — unified Cloud+AI+SaaS report | [dianuhs/tech-spend-command-center](https://github.com/dianuhs/tech-spend-command-center) |
-
-Six tools. One pipeline. Full Cloud+AI+SaaS coverage for every scope the FinOps Foundation 2026 Framework defines.
+Part of the [Cloud & Capital](https://github.com/cloudandcapital) FinOps pipeline.  
+AI spend feeds into [Cloud Cost Guard](https://github.com/cloudandcapital/cloud-cost-guard) — the unified FinOps dashboard.
 
 ---
 
-**AI Cost Lens** is a CLI tool that reads billing exports from OpenAI, Anthropic, and AWS Bedrock and produces FOCUS-style cost analysis at the model level.
+**Features:**
+- Per-model cost breakdown across all major AI providers
+- Daily spend trends and period-over-period comparison
+- Token efficiency analysis — cost per 1K tokens by model and task type
+- Unused or redundant model detection (paying for multiple models doing the same job)
+- FOCUS 2026 compliant export — AI spend in the same schema as cloud infrastructure
+- JSON output compatible with Cloud Cost Guard's `ai_spend` report section
 
-## What It Does
-
-- Reads billing CSV exports from **OpenAI**, **Anthropic**, and **AWS Bedrock**
-- **Auto-detects provider** from CSV column signatures — no `--provider` flag needed
-- Outputs FOCUS 1.0 columns: `BilledCost`, `ResourceId`, `ServiceName`, `ChargePeriodStart`, `ChargePeriodEnd`, `ChargeType`
-- `ServiceName` = the **model name** (e.g. `gpt-4o`, `claude-sonnet-4-6`, `amazon.nova-pro-v1:0`)
-- `--group-by model` — rank spend by model
-- `--group-by day` — show daily AI spend trends
-- `--format json/csv/table` — machine-readable or human-readable
-- `--compare` — compare two billing periods side by side
+---
 
 ## Install
 
 ```bash
-pip install -e .
+pip install "git+https://github.com/cloudandcapital/ai-cost-lens.git"
 # or
-pipx install "git+https://github.com/dianuhs/ai-cost-lens.git"
+pipx install .
 ```
 
-## Provider Support
+---
 
-| Provider | Detection signal | Source |
-|----------|-----------------|--------|
-| OpenAI | `model` column + model name starts with `gpt-`, `o1`, `o3`, `whisper`, `dall-e` | platform.openai.com/usage → Export CSV |
-| Anthropic | `model` column + model name starts with `claude-` | console.anthropic.com → Usage → Export |
-| AWS Bedrock | `model_id` column | Cost Explorer or CUR export |
-
-## Quickstart
-
-### Analyze by model
+## Setup
 
 ```bash
-ai-cost-lens analyze \
-  --input examples/openai-sample.csv \
-  --group-by model \
-  --format table
+# Anthropic
+export ANTHROPIC_API_KEY=sk-ant-...
+
+# OpenAI
+export OPENAI_API_KEY=sk-...
+
+# AWS Bedrock (uses AWS credentials)
+export AWS_PROFILE=finops-prod
+export AWS_DEFAULT_REGION=us-east-1
 ```
 
-```
-  ----------------------------------------------------------------------------------
-  Model                      Cost  Input Tok    Output Tok   Requests  Provider
-  ----------------------------------------------------------------------------------
-  gpt-4o                  $9.9050    365000        128000        450  openai
-  o1-mini                 $3.7100    135000         53000        235  openai
-  gpt-4o-mini             $1.6480   2670000        720000       6300  openai
-  text-embedding-3-small  $0.2560   6400000             0       2130  openai
-  ----------------------------------------------------------------------------------
-  TOTAL                  $15.5190
-```
+---
 
-### Analyze by day
+## Usage
 
 ```bash
-ai-cost-lens analyze \
-  --input examples/anthropic-sample.csv \
-  --group-by day \
-  --format json
+# Summarize AI spend across all configured providers (last 30 days)
+ai-cost-lens summary --days 30
+
+# Per-model cost breakdown
+ai-cost-lens breakdown --provider anthropic
+
+# Token efficiency report
+ai-cost-lens efficiency --days 30
+
+# Export FOCUS 2026 CSV
+ai-cost-lens export --format focus2026 --output ai-spend-focus2026.csv
+
+# JSON output for Cloud Cost Guard
+ai-cost-lens summary --format json > ai_spend.json
 ```
 
-### Compare two periods
+---
 
-```bash
-ai-cost-lens compare \
-  --baseline examples/openai-sample.csv \
-  --proposed examples/bedrock-sample.csv \
-  --group-by model
+## Output (JSON)
+
+```json
+{
+  "total_cost": 13160.00,
+  "daily_average": 438.67,
+  "trend": {
+    "change_percentage": 8.4,
+    "change_amount": 1024.00
+  },
+  "models": [
+    { "model": "claude-sonnet-4-6", "provider": "anthropic", "cost": 4820.00 },
+    { "model": "gpt-4o",            "provider": "openai",    "cost": 3960.00 },
+    { "model": "claude-opus-4-7",   "provider": "anthropic", "cost": 2140.00 }
+  ],
+  "providers": ["anthropic", "openai", "bedrock"]
+}
 ```
 
-### Machine-readable output
+---
 
-```bash
-ai-cost-lens analyze --input billing.csv --format json | jq '.rows[] | select(.cost > 5)'
-ai-cost-lens analyze --input billing.csv --format csv > ai-spend.csv
-```
+## Part of the Cloud & Capital Pipeline
 
-## Exit Codes
+| Tool | Role |
+|------|------|
+| [FinOps Lite](https://github.com/cloudandcapital/finops-lite) | Cost pull + FOCUS 2026 export |
+| [FinOps Watchdog](https://github.com/cloudandcapital/finops-watchdog) | Anomaly detection |
+| [Recovery Economics](https://github.com/cloudandcapital/recovery-economics) | Resilience cost modeling |
+| **AI Cost Lens** | AI/LLM spend tracking |
+| [Cloud Cost Guard](https://github.com/cloudandcapital/cloud-cost-guard) | Unified dashboard |
+| [SaaS Cost Analyzer](https://github.com/cloudandcapital/saas-cost-analyzer) | SaaS license governance |
+| [Tech Spend Command Center](https://github.com/cloudandcapital/tech-spend-command-center) | Executive reporting |
 
-- `0` success
-- `2` CLI usage error
-- `3` input file error
-- `4` schema/data error
-- `5` internal error
-
-## Examples
-
-See [`examples/`](examples/) for sample CSVs and expected outputs for all three providers.
-
-## Pipeline
-
-AI Cost Lens adds AI model spend observability to the pipeline:
-
-1. **[FinOps Lite](https://github.com/dianuhs/finops-lite)** — pull infrastructure spend from AWS/Azure/GCP
-2. **[FinOps Watchdog](https://github.com/dianuhs/finops-watchdog)** — detect anomalies in that spend
-3. **[Recovery Economics](https://github.com/dianuhs/recovery-economics)** — model resilience cost tradeoffs
-4. **[Cloud Cost Guard](https://github.com/dianuhs/cloud-cost-guard)** — dashboard layer
-5. **AI Cost Lens** — model-level AI spend: which models cost most, how spend is trending, how providers compare
+---
 
 ## License
 
-MIT
+MIT © 2025 Diana Molski, Cloud & Capital
